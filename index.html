@@ -13,7 +13,7 @@
 // prompted by your browser. If you see the error "The Geolocation service
 // failed.", it means you probably did not give permission for the browser to
 // locate you.
-let map, infoWindow;
+let map, infoWindow ,marker;
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -22,11 +22,11 @@ function initMap() {
   });
   infoWindow = new google.maps.InfoWindow();
 
-  const locationButton = document.getElementById("currentLocationButton");
+  // const locationButton = document.getElementById("currentLocationButton");
 
   // locationButton.textContent = "Pan to Current Location";
   // locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+    map.controls[google.maps.ControlPosition.TOP_CENTER]
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -36,11 +36,13 @@ function initMap() {
             lng: position.coords.longitude,
           };
 
-          infoWindow.setPosition(pos);
+
           infoWindow.setContent(`Location found.${pos.lat} ${pos.lng}`);
           infoWindow.open(map);
           map.setCenter(pos);
+          this.setMarkerPos({pos,map})
           map.setZoom(15)
+          
         },
         () => {
           handleLocationError(true, infoWindow, map.getCenter());
@@ -62,7 +64,12 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   );
   infoWindow.open(map);
 }
-
+function setMarkerPos ({pos,map}) {
+             marker = new google.maps.Marker({
+                          position: pos,
+                          map: map,
+                        });
+        }
 window.initMap = initMap;
     </script>
     <style>
