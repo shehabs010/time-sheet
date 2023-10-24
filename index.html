@@ -36,7 +36,6 @@ function initMap() {
             lng: position.coords.longitude,
           };
 
-
           infoWindow.setContent(`Location found.${pos.lat} ${pos.lng}`);
           infoWindow.open(map);
           map.setCenter(pos);
@@ -71,7 +70,19 @@ function setMarkerPos ({pos,map}) {
                         });
         }
 window.initMap = initMap;
+
+
+
+// const filePath= './time-sheet.json'
+//       fs.readFile(filePath, 'utf8', (err, fileData) => {
+//   if (err) {
+//     console.error('Error reading the JSON file:', err);
+//   } else {
+//     const parsedData = JSON.parse(fileData);
+//     console.log('Data read from the JSON file:', parsedData);
+//   }});
     </script>
+    
     <style>
       /**
        * @license
@@ -110,7 +121,7 @@ window.initMap = initMap;
   </head>
   <body>
     <div id="map"></div>
-
+    <button id="currentLocationButton"> send man</button>
     <!--
      The 'defer' attribute causes the callback to execute after the full HTML
      document has been parsed. For non-blocking uses, avoiding race conditions,
@@ -121,5 +132,32 @@ window.initMap = initMap;
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB1gfMe1mwNoRlHRjcltka1hjZRXVrWK4&callback=initMap&v=weekly"
       defer
     ></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script>
+     $(function () {
+    $("#currentLocationButton").on("click", function (e) {
+        var shape = $(".shape"),
+            name = $("#filename").val() || "data-" + $.now();
+        shape.data("style", shape.css(["color", "width", "height"]));
+        var request = function (url, filename) {
+            var file = {
+                json: JSON.stringify({check_in:'50',check_out:'50'})
+            };
+            return $.ajax({
+                url: '/time-sheet.json',
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: file
+            }).then(function (data, textStatus, jqxhr) {
+              
+             }, function(jqxhr, textStatus, errorThrown) {
+                  console.log(textStatus, errorThrown)
+            });
+        };
+        request("/echo/json/", name)
+    });
+})
+    </script>
   </body>
 </html>
